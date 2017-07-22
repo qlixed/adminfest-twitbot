@@ -4,15 +4,20 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 # Go to http://apps.twitter.com and create an app.
 # The consumer key and secret will be generated for you after
-consumer_key="xxxxxxxxxxxxxxxxxxxxxxxxx"
-consumer_secret="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+consumer_key = config['credentials']['consumer_key']
+consumer_secret = config['credentials']['consumer_secret']
 
 # After the step above, you will be redirected to your app's page.
 # Create an access token under the the "Your access token" section
-access_token="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-access_token_secret="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+access_token = config['credentials']['access_token']
+access_token_secret = config['credentials']['access_token_secret']
 
 class StdOutListener(StreamListener):
     """ A listener handles tweets that are received from the stream.
