@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 
+import configparser
+import peewee
+import datetime
+
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
+from tweepy import API
 
-import configparser
+from model import Tweet, User, BeerCode
+
+
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -28,18 +35,30 @@ class StdOutListener(StreamListener):
         print(status.id,' ', status.text)
         print("-")
         print(status.user.id, status.user.description)
+
+        new_user, _ = User.get_or_create(user_id=status.user.id)
+        new_twit, _ = Tweet.get_or_create(user=new_user, status_id=status.id,message=status.text)
+
+
         return True
     #def on_private_message
-        # tambien podemos monitorear el inbox de DM’s y otros estados.
+        # tambien podemos monitorear el inbox de DMs y otros estados.
 
     def on_error(self, status):
         print(status)
 
 if __name__ == '__main__':
-    # Faltaría hacer la parte de buscar para atras, y encolar en algo tipo previous_queue para que el worker decida si tiene que aceptarlos o no. en sucesivos runs el worker ya tiene en su db guardados los twits que proceso o skipeo para no reprocesarlos.
+
+    # Faltaria hacer la parte de buscar para atras, y encolar en algo tipo previous_queue para que el worker decida si tiene que aceptarlos o no. en sucesivos runs el worker ya tiene en su db guardados los twits que proceso o skipeo para no reprocesarlos.
     l = StdOutListener()
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
 
+    api = API(auth)
+    if (not api):
+        print ("Problem connecting to API")
+
+    # http://www.dealingdata.net/2016/07/23/PoGo-Series-Tweepy/
+
     stream = Stream(auth, l)
-    stream.filter(track=['orsxg5ak'])
+    stream.filter(track=['rating'])

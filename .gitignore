@@ -1,1 +1,5 @@
 config.ini
+_virtualenv
+.idea
+__pycache__
+adminfest.db
