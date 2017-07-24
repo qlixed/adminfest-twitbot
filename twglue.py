@@ -2,7 +2,7 @@
 
 # vim: nospell
 import logging
-from multiprocessing import mp
+import multiprocessing as mp
 from configparser import ConfigParser
 import tweepy as tw
 
